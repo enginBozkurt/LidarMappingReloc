@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -std=c++11 -O3 -Wall -g -pthread  -shared -Wl,-soname,libgtest_main.so -o libgtest_main.so CMakeFiles/gtest_main.dir/src/gtest_main.cc.o  -L/home/binpeng/Documents/LIO-SAM/build/gtest/gtest/src -Wl,-rpath,/home/binpeng/Documents/LIO-SAM/build/gtest/gtest/src:/home/binpeng/Documents/LIO-SAM/build/gtest/gtest -lpthread libgtest.so -lpthread 

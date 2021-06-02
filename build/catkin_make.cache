@@ -1,0 +1,2 @@
+.
+-DCATKIN_DEVEL_PREFIX=/home/binpeng/Documents/LIO-SAM/devel -DCMAKE_INSTALL_PREFIX=/home/binpeng/Documents/LIO-SAM/install -G Unix Makefiles

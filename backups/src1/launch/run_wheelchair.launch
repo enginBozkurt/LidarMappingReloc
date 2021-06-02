@@ -1,0 +1,24 @@
+<launch>
+
+    <arg name="project" default="lio_sam"/>
+
+    <env name="ROSCONSOLE_CONFIG_FILE" value="$(find lio_sam)/launch/include/rosconsole/rosconsole_info.conf"/>
+    
+    <!-- Parameters -->
+    <rosparam file="$(find lio_sam)/config/params_wheelchair.yaml" command="load" />
+    <param name="use_sim_time" value="true" />
+    <!--- LOAM -->
+    <include file="$(find lio_sam)/launch/include/module_loam.launch" />
+
+    <!--- Robot State TF -->
+    <include file="$(find lio_sam)/launch/include/module_robot_state_publisher.launch" />
+
+    <!--- Run Navsat -->
+    <include file="$(find lio_sam)/launch/include/module_navsat.launch" />
+
+    <!--- Run Rviz-->
+    <include file="$(find lio_sam)/launch/include/module_rviz.launch" />
+
+    <node pkg="tf" type="static_transform_publisher" name="map2odom" args="0 0 0 0 0 0 /map /odom 100" /> 
+    <node pkg="tf" type="static_transform_publisher" name="lidar2base" args="0 0 0 0 0 0 /lidar_link /base_link 100" />
+</launch>

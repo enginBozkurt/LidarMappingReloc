@@ -40,7 +40,7 @@ BRIEF::~BRIEF()
 
 void BRIEF::compute(const cv::Mat &image, 
     const std::vector<cv::KeyPoint> &points,
-    vector<bitset> &descriptors,
+    cv::Mat &descriptors,
     bool treat_image) const
 {
   const float sigma = 2.f;
@@ -73,20 +73,14 @@ void BRIEF::compute(const cv::Mat &image,
   // use im now
   const int W = im.cols;
   const int H = im.rows;
-  
-  descriptors.resize(points.size());
-  std::vector<bitset>::iterator dit;
-
+  // Don't just follow others!!! every row is for one kp
+  cv::Mat tmpDes(points.size(),m_bit_length, CV_8UC1, cv::Scalar::all(0) );
   std::vector<cv::KeyPoint>::const_iterator kit;
   
   int x1, y1, x2, y2;
-  
-  dit = descriptors.begin();
-  for(kit = points.begin(); kit != points.end(); ++kit, ++dit)
+  int j = 0;
+  for(kit = points.begin(); kit != points.end(); ++kit)
   {
-    dit->resize(m_bit_length);
-    dit->reset();
-
     for(unsigned int i = 0; i < m_x1.size(); ++i)
     {
       x1 = (int)(kit->pt.x + m_x1[i]);
@@ -99,12 +93,14 @@ void BRIEF::compute(const cv::Mat &image,
       {
         if( im.ptr<unsigned char>(y1)[x1] < im.ptr<unsigned char>(y2)[x2] )
         {
-          dit->set(i);
+          tmpDes.ptr<unsigned char>(j)[i] = 1;
         }        
       } // if (x,y)_1 and (x,y)_2 are in the image
             
     } // for each (x,y)
+  j++;
   } // for each keypoint
+  descriptors = tmpDes.clone();
 }
 
 // ---------------------------------------------------------------------------

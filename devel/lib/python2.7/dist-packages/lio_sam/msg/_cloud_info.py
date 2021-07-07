@@ -10,7 +10,7 @@ import sensor_msgs.msg
 import std_msgs.msg
 
 class cloud_info(genpy.Message):
-  _md5sum = "7374f8b2f88cabcdbc6b83d139f2d4f6"
+  _md5sum = "102900be9f1d84c28194ebd4d28ac70f"
   _type = "lio_sam/cloud_info"
   _has_header = True  # flag to mark the presence of a Header object
   _full_text = """# Cloud Info
@@ -50,6 +50,9 @@ sensor_msgs/PointCloud2 cloud_surface   # extracted surface feature
 
 # Range image for feature extraction
 sensor_msgs/Image rangeMat
+
+# multi-layer range mat
+sensor_msgs/Image[] mlRangeMat
 
 
 ================================================================================
@@ -148,8 +151,8 @@ uint8 is_bigendian    # is this data bigendian?
 uint32 step           # Full row length in bytes
 uint8[] data          # actual matrix data, size is (step * rows)
 """
-  __slots__ = ['header','startRingIndex','endRingIndex','pointColInd','pointRange','keypointX','keypointY','enoughNum','imuAvailable','odomAvailable','imuRollInit','imuPitchInit','imuYawInit','initialGuessX','initialGuessY','initialGuessZ','initialGuessRoll','initialGuessPitch','initialGuessYaw','cloud_deskewed','cloud_corner','cloud_surface','rangeMat']
-  _slot_types = ['std_msgs/Header','int32[]','int32[]','int32[]','float32[]','int32[]','int32[]','bool','int64','int64','float32','float32','float32','float32','float32','float32','float32','float32','float32','sensor_msgs/PointCloud2','sensor_msgs/PointCloud2','sensor_msgs/PointCloud2','sensor_msgs/Image']
+  __slots__ = ['header','startRingIndex','endRingIndex','pointColInd','pointRange','keypointX','keypointY','enoughNum','imuAvailable','odomAvailable','imuRollInit','imuPitchInit','imuYawInit','initialGuessX','initialGuessY','initialGuessZ','initialGuessRoll','initialGuessPitch','initialGuessYaw','cloud_deskewed','cloud_corner','cloud_surface','rangeMat','mlRangeMat']
+  _slot_types = ['std_msgs/Header','int32[]','int32[]','int32[]','float32[]','int32[]','int32[]','bool','int64','int64','float32','float32','float32','float32','float32','float32','float32','float32','float32','sensor_msgs/PointCloud2','sensor_msgs/PointCloud2','sensor_msgs/PointCloud2','sensor_msgs/Image','sensor_msgs/Image[]']
 
   def __init__(self, *args, **kwds):
     """
@@ -159,7 +162,7 @@ uint8[] data          # actual matrix data, size is (step * rows)
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       header,startRingIndex,endRingIndex,pointColInd,pointRange,keypointX,keypointY,enoughNum,imuAvailable,odomAvailable,imuRollInit,imuPitchInit,imuYawInit,initialGuessX,initialGuessY,initialGuessZ,initialGuessRoll,initialGuessPitch,initialGuessYaw,cloud_deskewed,cloud_corner,cloud_surface,rangeMat
+       header,startRingIndex,endRingIndex,pointColInd,pointRange,keypointX,keypointY,enoughNum,imuAvailable,odomAvailable,imuRollInit,imuPitchInit,imuYawInit,initialGuessX,initialGuessY,initialGuessZ,initialGuessRoll,initialGuessPitch,initialGuessYaw,cloud_deskewed,cloud_corner,cloud_surface,rangeMat,mlRangeMat
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -214,6 +217,8 @@ uint8[] data          # actual matrix data, size is (step * rows)
         self.cloud_surface = sensor_msgs.msg.PointCloud2()
       if self.rangeMat is None:
         self.rangeMat = sensor_msgs.msg.Image()
+      if self.mlRangeMat is None:
+        self.mlRangeMat = []
     else:
       self.header = std_msgs.msg.Header()
       self.startRingIndex = []
@@ -238,6 +243,7 @@ uint8[] data          # actual matrix data, size is (step * rows)
       self.cloud_corner = sensor_msgs.msg.PointCloud2()
       self.cloud_surface = sensor_msgs.msg.PointCloud2()
       self.rangeMat = sensor_msgs.msg.Image()
+      self.mlRangeMat = []
 
   def _get_types(self):
     """
@@ -398,6 +404,38 @@ uint8[] data          # actual matrix data, size is (step * rows)
         buff.write(struct.Struct('<I%sB'%length).pack(length, *_x))
       else:
         buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
+      length = len(self.mlRangeMat)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.mlRangeMat:
+        _v1 = val1.header
+        _x = _v1.seq
+        buff.write(_get_struct_I().pack(_x))
+        _v2 = _v1.stamp
+        _x = _v2
+        buff.write(_get_struct_2I().pack(_x.secs, _x.nsecs))
+        _x = _v1.frame_id
+        length = len(_x)
+        if python3 or type(_x) == unicode:
+          _x = _x.encode('utf-8')
+          length = len(_x)
+        buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
+        _x = val1
+        buff.write(_get_struct_2I().pack(_x.height, _x.width))
+        _x = val1.encoding
+        length = len(_x)
+        if python3 or type(_x) == unicode:
+          _x = _x.encode('utf-8')
+          length = len(_x)
+        buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
+        _x = val1
+        buff.write(_get_struct_BI().pack(_x.is_bigendian, _x.step))
+        _x = val1.data
+        length = len(_x)
+        # - if encoded as a list instead, serialize as bytes instead of string
+        if type(_x) in [list, tuple]:
+          buff.write(struct.Struct('<I%sB'%length).pack(length, *_x))
+        else:
+          buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -418,6 +456,8 @@ uint8[] data          # actual matrix data, size is (step * rows)
         self.cloud_surface = sensor_msgs.msg.PointCloud2()
       if self.rangeMat is None:
         self.rangeMat = sensor_msgs.msg.Image()
+      if self.mlRangeMat is None:
+        self.mlRangeMat = None
       end = 0
       _x = self
       start = end
@@ -664,6 +704,54 @@ uint8[] data          # actual matrix data, size is (step * rows)
       start = end
       end += length
       self.rangeMat.data = str[start:end]
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.mlRangeMat = []
+      for i in range(0, length):
+        val1 = sensor_msgs.msg.Image()
+        _v3 = val1.header
+        start = end
+        end += 4
+        (_v3.seq,) = _get_struct_I().unpack(str[start:end])
+        _v4 = _v3.stamp
+        _x = _v4
+        start = end
+        end += 8
+        (_x.secs, _x.nsecs,) = _get_struct_2I().unpack(str[start:end])
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        if python3:
+          _v3.frame_id = str[start:end].decode('utf-8', 'rosmsg')
+        else:
+          _v3.frame_id = str[start:end]
+        _x = val1
+        start = end
+        end += 8
+        (_x.height, _x.width,) = _get_struct_2I().unpack(str[start:end])
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        if python3:
+          val1.encoding = str[start:end].decode('utf-8', 'rosmsg')
+        else:
+          val1.encoding = str[start:end]
+        _x = val1
+        start = end
+        end += 5
+        (_x.is_bigendian, _x.step,) = _get_struct_BI().unpack(str[start:end])
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        val1.data = str[start:end]
+        self.mlRangeMat.append(val1)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill
@@ -823,6 +911,38 @@ uint8[] data          # actual matrix data, size is (step * rows)
         buff.write(struct.Struct('<I%sB'%length).pack(length, *_x))
       else:
         buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
+      length = len(self.mlRangeMat)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.mlRangeMat:
+        _v5 = val1.header
+        _x = _v5.seq
+        buff.write(_get_struct_I().pack(_x))
+        _v6 = _v5.stamp
+        _x = _v6
+        buff.write(_get_struct_2I().pack(_x.secs, _x.nsecs))
+        _x = _v5.frame_id
+        length = len(_x)
+        if python3 or type(_x) == unicode:
+          _x = _x.encode('utf-8')
+          length = len(_x)
+        buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
+        _x = val1
+        buff.write(_get_struct_2I().pack(_x.height, _x.width))
+        _x = val1.encoding
+        length = len(_x)
+        if python3 or type(_x) == unicode:
+          _x = _x.encode('utf-8')
+          length = len(_x)
+        buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
+        _x = val1
+        buff.write(_get_struct_BI().pack(_x.is_bigendian, _x.step))
+        _x = val1.data
+        length = len(_x)
+        # - if encoded as a list instead, serialize as bytes instead of string
+        if type(_x) in [list, tuple]:
+          buff.write(struct.Struct('<I%sB'%length).pack(length, *_x))
+        else:
+          buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -844,6 +964,8 @@ uint8[] data          # actual matrix data, size is (step * rows)
         self.cloud_surface = sensor_msgs.msg.PointCloud2()
       if self.rangeMat is None:
         self.rangeMat = sensor_msgs.msg.Image()
+      if self.mlRangeMat is None:
+        self.mlRangeMat = None
       end = 0
       _x = self
       start = end
@@ -1090,6 +1212,54 @@ uint8[] data          # actual matrix data, size is (step * rows)
       start = end
       end += length
       self.rangeMat.data = str[start:end]
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.mlRangeMat = []
+      for i in range(0, length):
+        val1 = sensor_msgs.msg.Image()
+        _v7 = val1.header
+        start = end
+        end += 4
+        (_v7.seq,) = _get_struct_I().unpack(str[start:end])
+        _v8 = _v7.stamp
+        _x = _v8
+        start = end
+        end += 8
+        (_x.secs, _x.nsecs,) = _get_struct_2I().unpack(str[start:end])
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        if python3:
+          _v7.frame_id = str[start:end].decode('utf-8', 'rosmsg')
+        else:
+          _v7.frame_id = str[start:end]
+        _x = val1
+        start = end
+        end += 8
+        (_x.height, _x.width,) = _get_struct_2I().unpack(str[start:end])
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        if python3:
+          val1.encoding = str[start:end].decode('utf-8', 'rosmsg')
+        else:
+          val1.encoding = str[start:end]
+        _x = val1
+        start = end
+        end += 5
+        (_x.is_bigendian, _x.step,) = _get_struct_BI().unpack(str[start:end])
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        val1.data = str[start:end]
+        self.mlRangeMat.append(val1)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill

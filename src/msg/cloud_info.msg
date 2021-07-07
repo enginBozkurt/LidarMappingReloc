@@ -36,3 +36,6 @@ sensor_msgs/PointCloud2 cloud_surface   # extracted surface feature
 # Range image for feature extraction
 sensor_msgs/Image rangeMat
 
+# multi-layer range mat
+sensor_msgs/Image[] mlRangeMat
+

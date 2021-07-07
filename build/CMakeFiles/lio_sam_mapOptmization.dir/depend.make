@@ -659,6 +659,7 @@ CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /opt/ros/kinetic
 CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /opt/ros/kinetic/include/geometry_msgs/Pose.h
 CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /opt/ros/kinetic/include/geometry_msgs/PoseStamped.h
 CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /opt/ros/kinetic/include/geometry_msgs/PoseWithCovariance.h
+CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /opt/ros/kinetic/include/geometry_msgs/PoseWithCovarianceStamped.h
 CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /opt/ros/kinetic/include/geometry_msgs/Quaternion.h
 CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /opt/ros/kinetic/include/geometry_msgs/QuaternionStamped.h
 CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /opt/ros/kinetic/include/geometry_msgs/Transform.h
@@ -1426,6 +1427,14 @@ CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /usr/include/x86
 CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /usr/include/x86_64-linux-gnu/sys/select.h
 CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /usr/include/x86_64-linux-gnu/sys/time.h
 CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /usr/include/x86_64-linux-gnu/sys/timeb.h
+CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/BowVector.h
+CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/DBoW3.h
+CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/Database.h
+CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/FeatureVector.h
+CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/QueryResults.h
+CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/ScoringObject.h
+CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/Vocabulary.h
+CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/exports.h
 CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /usr/local/lib/cmake/GTSAM/../../../include/gtsam/base/ConcurrentMap.h
 CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /usr/local/lib/cmake/GTSAM/../../../include/gtsam/base/FastDefaultAllocator.h
 CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o: /usr/local/lib/cmake/GTSAM/../../../include/gtsam/base/FastList.h

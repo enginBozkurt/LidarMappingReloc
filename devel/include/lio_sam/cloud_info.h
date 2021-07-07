@@ -20,6 +20,7 @@
 #include <sensor_msgs/PointCloud2.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <sensor_msgs/Image.h>
+#include <sensor_msgs/Image.h>
 
 namespace lio_sam
 {
@@ -51,7 +52,8 @@ struct cloud_info_
     , cloud_deskewed()
     , cloud_corner()
     , cloud_surface()
-    , rangeMat()  {
+    , rangeMat()
+    , mlRangeMat()  {
     }
   cloud_info_(const ContainerAllocator& _alloc)
     : header(_alloc)
@@ -76,7 +78,8 @@ struct cloud_info_
     , cloud_deskewed(_alloc)
     , cloud_corner(_alloc)
     , cloud_surface(_alloc)
-    , rangeMat(_alloc)  {
+    , rangeMat(_alloc)
+    , mlRangeMat(_alloc)  {
   (void)_alloc;
     }
 
@@ -150,6 +153,9 @@ struct cloud_info_
 
    typedef  ::sensor_msgs::Image_<ContainerAllocator>  _rangeMat_type;
   _rangeMat_type rangeMat;
+
+   typedef std::vector< ::sensor_msgs::Image_<ContainerAllocator> , typename ContainerAllocator::template rebind< ::sensor_msgs::Image_<ContainerAllocator> >::other >  _mlRangeMat_type;
+  _mlRangeMat_type mlRangeMat;
 
 
 
@@ -229,12 +235,12 @@ struct MD5Sum< ::lio_sam::cloud_info_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "7374f8b2f88cabcdbc6b83d139f2d4f6";
+    return "102900be9f1d84c28194ebd4d28ac70f";
   }
 
   static const char* value(const ::lio_sam::cloud_info_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x7374f8b2f88cabcdULL;
-  static const uint64_t static_value2 = 0xbc6b83d139f2d4f6ULL;
+  static const uint64_t static_value1 = 0x102900be9f1d84c2ULL;
+  static const uint64_t static_value2 = 0x8194ebd4d28ac70fULL;
 };
 
 template<class ContainerAllocator>
@@ -290,6 +296,9 @@ sensor_msgs/PointCloud2 cloud_surface   # extracted surface feature\n\
 \n\
 # Range image for feature extraction\n\
 sensor_msgs/Image rangeMat\n\
+\n\
+# multi-layer range mat\n\
+sensor_msgs/Image[] mlRangeMat\n\
 \n\
 \n\
 ================================================================================\n\
@@ -428,6 +437,7 @@ namespace serialization
       stream.next(m.cloud_corner);
       stream.next(m.cloud_surface);
       stream.next(m.rangeMat);
+      stream.next(m.mlRangeMat);
     }
 
     ROS_DECLARE_ALLINONE_SERIALIZER
@@ -521,6 +531,14 @@ struct Printer< ::lio_sam::cloud_info_<ContainerAllocator> >
     s << indent << "rangeMat: ";
     s << std::endl;
     Printer< ::sensor_msgs::Image_<ContainerAllocator> >::stream(s, indent + "  ", v.rangeMat);
+    s << indent << "mlRangeMat[]" << std::endl;
+    for (size_t i = 0; i < v.mlRangeMat.size(); ++i)
+    {
+      s << indent << "  mlRangeMat[" << i << "]: ";
+      s << std::endl;
+      s << indent;
+      Printer< ::sensor_msgs::Image_<ContainerAllocator> >::stream(s, indent + "    ", v.mlRangeMat[i]);
+    }
   }
 };
 

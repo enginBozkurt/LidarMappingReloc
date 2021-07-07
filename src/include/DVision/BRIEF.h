@@ -98,7 +98,7 @@ public:
    */
   inline void operator() (const cv::Mat &image, 
     const std::vector<cv::KeyPoint> &points,
-    std::vector<bitset> &descriptors,
+    cv::Mat &descriptors,
     bool treat_image = true) const
   {
     compute(image, points, descriptors, treat_image);
@@ -116,7 +116,7 @@ public:
    */ 
   void compute(const cv::Mat &image,
     const std::vector<cv::KeyPoint> &points,
-    std::vector<bitset> &descriptors,
+     cv::Mat &descriptors,
     bool treat_image = true) const;
   
   /**
@@ -153,16 +153,6 @@ public:
     m_bit_length = x1.size();
   }
   
-  /**
-   * Returns the Hamming distance between two descriptors
-   * @param a first descriptor vector
-   * @param b second descriptor vector
-   * @return hamming distance
-   */
-  inline static int distance(const bitset &a, const bitset &b)
-  {
-    return (a^b).count();
-  }
 
 protected:
 

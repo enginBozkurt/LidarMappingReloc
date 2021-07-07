@@ -1,48 +1,37 @@
 lio_sam:
 
-  relocalizationMode: false
-  saveKeyframeMap: true
+  relocalizationMode: true
+  saveKeyframeMap: false # this will also save every keyframe rawcloud!
   savePCD: false  
-  savePose: true # for path recording purposes /reloc gt, save it to saveMapDirectory
-  saveMapDirectory: "/home/binpeng/Documents/LIO-SAM/maps/parkingLot/BLC"      
+  savePose: false # for path recording purposes /reloc gt, save it to saveMapDirectory
+  saveMapDirectory: "/media/binpeng/BIGLUCK/Datasets/LABdataset/Maps/new/map_pcd"      
   # saveMapDirectory: "/home/binpeng/Documents/LIO-SAM/test/office_rev"      
-  saveKeyframeMapDirectory: "/home/binpeng/Documents/LIO-SAM/maps/parkingLot" # for relocalization
-  loadKeyframeMapDirectory: "/home/binpeng/Documents/LIO-SAM/maps/office_rev"
-
-  # For scan context
-  saveNodeRawCloudDirectory: /home/binpeng/Documents/LIO-SAM/maps/office/scanContext
-  LIDAR_HEIGHT: 2.0
-  PC_NUM_RING: 20
-  PC_NUM_SECTOR: 60
-  PC_MAX_RADIUS: 20.0 #indoor 20, outdoor 80
-  loopClosingInterval: 3
-  euclideanLC: true
-
-  # For range mat
-  keypointNum: 60
-  keypointSize: 5 # for 16 line lidar
+  saveKeyframeMapDirectory: "/media/binpeng/BIGLUCK/Datasets/LABdataset/Maps/new/keyframes" # for relocalization
+  loadKeyframeMapDirectory: "/media/binpeng/BIGLUCK/Datasets/LABdataset/Maps/IMR2ndFloor/keyframes"
 
   # For reloc: global variables
   mapLoaded: false
   relocSuccess: false
+  useOdom: true 
 
-  mappingProcessInterval: 0.1                 # without encoder odometry or imu, 0.2 is not acceptable! seconds, regulate mapping frequency
+  mappingProcessInterval: 0.15                 # without encoder odometry or imu, 0.2 is not acceptable! seconds, regulate mapping frequency
     # Surrounding map
-  surroundingkeyframeAddingDistThreshold: 1.0   # meters, regulate keyframe adding threshold
-  surroundingkeyframeAddingAngleThreshold: 0.2  # radians, regulate keyframe adding threshold
+  surroundingkeyframeAddingDistThreshold: 1.0   # 1.0 by default,meters, regulate keyframe adding threshold
+  surroundingkeyframeAddingAngleThreshold: 0.2  # 0.2 by default,radians, regulate keyframe adding threshold
   surroundingKeyframeDensity: 2.0               # meters, downsample surrounding keyframe poses   
   surroundingKeyframeSearchRadius: 50.0         # 20 is not okay; meters, within n meters scan-to-map optimization (when loop closure disabled)
   # Topics
   pointCloudTopic: "rslidar_points"               # Point cloud data
   imuTopic: "imu/data"                         # IMU data
-  odomTopic: "odometry/imu"                   # IMU pre-preintegration odometry, same frequency as IMU
+  # odomTopic: "odometry/imu"                   # IMU pre-preintegration odometry, same frequency as IMU
+  odomTopic: odom
   gpsTopic: "odometry/gps"                    # GPS odometry topic from navsat, see module_navsat.launch file
 
   # Frames
-  lidarFrame: "base_link"
+  lidarFrame: "lidar_link"
   baselinkFrame: "base_link"
-  odometryFrame: "odom"
-  mapFrame: "map"
+  odometryFrame: "odomLIO"
+  mapFrame: "mapLIO"
 
   # GPS Settings
   useImuHeadingInitialization: true           # if using GPS data, set to "true"
@@ -51,16 +40,16 @@ lio_sam:
   poseCovThreshold: 1.0                      # m^2, threshold for using GPS data
   
 
- # eu-longterm
+  # robosense lidar settings
   sensor: velodyne                            # lidar sensor type, either 'velodyne' or 'ouster'
   N_SCAN: 16                                 ## number of lidar channel (i.e., 16, 32, 64, 128)
-  Horizon_SCAN: 1800                          ## lidar horizontal resolution (Velodyne:1800, Ouster:512,1024,2048)
+  Horizon_SCAN: 2000                          ## lidar horizontal resolution (Velodyne:1800, Ouster:512,1024,2048,robosense: 2000)
   downsampleRate: 1                           # default: 1. Downsample your data if too many points. i.e., 16 = 64 / 4, 16 = 16 / 1
-  lidarMinRange: 1.0                          # default: 1.0, minimum lidar range to be used
-  lidarMaxRange: 100.0                      ## default: 1000.0, maximum lidar range to be used
-  imuFrequency: 100.0
+  lidarMinRange: 0.2                          # default: 1.0, minimum lidar range to be used
+  lidarMaxRange: 150.0                      ## default: 1000.0, maximum lidar range to be used
 
   # IMU Settings
+  imuFrequency: 100.0
   imuAccNoise: 3.9939570888238808e-03 
   imuGyrNoise: 1.5636343949698187e-03
   imuAccBiasN: 6.4356659353532566e-05
@@ -100,12 +89,14 @@ lio_sam:
 
   # Loop closure
   loopClosureEnableFlag: true
-  loopClosureFrequency: 1.0                     # Hz, regulate loop closure constraint add frequency
+  loopClosureFrequency: 1.0                    # Hz, regulate loop closure constraint add frequency
   surroundingKeyframeSize: 50                   # submap size (when loop closure enabled)
   historyKeyframeSearchRadius: 15.0             # meters, key frame that is within n meters from current pose will be considerd for loop closure
-  historyKeyframeSearchTimeDiff: 30.0           # seconds, key frame that is n seconds older will be considered for loop closure
+  historyKeyframeSearchTimeDiff: 30.0           # 30 by default,seconds, key frame that is n seconds older will be considered for loop closure
   historyKeyframeSearchNum: 25                  # number of hostory key frames will be fused into a submap for loop closure
-  historyKeyframeFitnessScore: 0.3              # icp threshold, the smaller the better alignment
+  # 0.3 by default, but for indoor it can go wrong, actually mostly for good matches, fitnessScore is around 0.03 ;
+  #icp threshold, the smaller the better alignment
+  historyKeyframeFitnessScore: 0.2              
 
   # Visualization
   globalMapVisualizationSearchRadius: 1000.0    # meters, global map visualization radius
@@ -194,3 +185,26 @@ ekf_gps:
                                0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,    0.01, 0,      0,
                                0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,    0,    0.01,   0,
                                0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,    0,    0,      0.015]
+
+                                 # For DBow3
+  generateVocab: true
+  # For scan context
+  saveNodeRawCloudDirectory: /home/binpeng/Documents/LIO-SAM/maps/office/scanContext
+
+  LIDAR_HEIGHT: 2.0
+  PC_NUM_RING: 20
+  PC_NUM_SECTOR: 60
+  PC_MAX_RADIUS: 20.0 #indoor 20, outdoor 80
+  loopClosingInterval: 3
+  euclideanLC: true
+  SC_DIST_THRES: 0.1
+
+  # For range mat
+  keypointCornerNum: 50
+  keypointSurfaceNum: 450
+  keypointSize: 5 # for 16 line lidar
+  bitSize: 32
+
+  # multi-layer rangemat
+  layerNum: 10
+  mlMAX_RADIUS: 30

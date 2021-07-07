@@ -290,7 +290,15 @@ lio_sam_pcl_visualize_EXTERNAL_OBJECTS =
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_ximgproc3.so.3.3.1
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_xobjdetect3.so.3.3.1
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_xphoto3.so.3.3.1
-/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /usr/local/lib/libgtsam.so.4.0.2
+/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /usr/lib/x86_64-linux-gnu/libboost_signals.so
+/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /opt/ros/kinetic/lib/librosconsole.so
+/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /opt/ros/kinetic/lib/librosconsole_log4cxx.so
+/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /opt/ros/kinetic/lib/librosconsole_backend_interface.so
+/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /usr/lib/x86_64-linux-gnu/liblog4cxx.so
+/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /opt/ros/kinetic/lib/libxmlrpcpp.so
+/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /opt/ros/kinetic/lib/libroscpp_serialization.so
+/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /opt/ros/kinetic/lib/librostime.so
+/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /opt/ros/kinetic/lib/libcpp_common.so
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /usr/lib/x86_64-linux-gnu/libpcl_common.so
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so
@@ -428,15 +436,6 @@ lio_sam_pcl_visualize_EXTERNAL_OBJECTS =
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_objdetect3.so.3.3.1
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_imgproc3.so.3.3.1
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_core3.so.3.3.1
-/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /usr/lib/x86_64-linux-gnu/libboost_serialization.so
-/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /usr/lib/x86_64-linux-gnu/libboost_system.so
-/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
-/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /usr/lib/x86_64-linux-gnu/libboost_thread.so
-/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /usr/lib/x86_64-linux-gnu/libboost_date_time.so
-/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /usr/lib/x86_64-linux-gnu/libboost_regex.so
-/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /usr/lib/x86_64-linux-gnu/libboost_timer.so
-/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /usr/lib/x86_64-linux-gnu/libboost_chrono.so
-/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: /usr/local/lib/libmetis.so
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize: CMakeFiles/lio_sam_pcl_visualize.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/binpeng/Documents/LIO-SAM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_pcl_visualize"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/lio_sam_pcl_visualize.dir/link.txt --verbose=$(VERBOSE)

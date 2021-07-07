@@ -18,7 +18,7 @@
 
 (defclass lio_sam::cloud_info
   :super ros::object
-  :slots (_header _startRingIndex _endRingIndex _pointColInd _pointRange _keypointX _keypointY _enoughNum _imuAvailable _odomAvailable _imuRollInit _imuPitchInit _imuYawInit _initialGuessX _initialGuessY _initialGuessZ _initialGuessRoll _initialGuessPitch _initialGuessYaw _cloud_deskewed _cloud_corner _cloud_surface _rangeMat ))
+  :slots (_header _startRingIndex _endRingIndex _pointColInd _pointRange _keypointX _keypointY _enoughNum _imuAvailable _odomAvailable _imuRollInit _imuPitchInit _imuYawInit _initialGuessX _initialGuessY _initialGuessZ _initialGuessRoll _initialGuessPitch _initialGuessYaw _cloud_deskewed _cloud_corner _cloud_surface _rangeMat _mlRangeMat ))
 
 (defmethod lio_sam::cloud_info
   (:init
@@ -46,6 +46,7 @@
     ((:cloud_corner __cloud_corner) (instance sensor_msgs::PointCloud2 :init))
     ((:cloud_surface __cloud_surface) (instance sensor_msgs::PointCloud2 :init))
     ((:rangeMat __rangeMat) (instance sensor_msgs::Image :init))
+    ((:mlRangeMat __mlRangeMat) (let (r) (dotimes (i 0) (push (instance sensor_msgs::Image :init) r)) r))
     )
    (send-super :init)
    (setq _header __header)
@@ -71,6 +72,7 @@
    (setq _cloud_corner __cloud_corner)
    (setq _cloud_surface __cloud_surface)
    (setq _rangeMat __rangeMat)
+   (setq _mlRangeMat __mlRangeMat)
    self)
   (:header
    (&rest __header)
@@ -161,6 +163,13 @@
      (progn
        (if __rangeMat (setq _rangeMat (car __rangeMat)))
        _rangeMat)))
+  (:mlRangeMat
+   (&rest __mlRangeMat)
+   (if (keywordp (car __mlRangeMat))
+       (send* _mlRangeMat __mlRangeMat)
+     (progn
+       (if __mlRangeMat (setq _mlRangeMat (car __mlRangeMat)))
+       _mlRangeMat)))
   (:serialization-length
    ()
    (+
@@ -210,6 +219,8 @@
     (send _cloud_surface :serialization-length)
     ;; sensor_msgs/Image _rangeMat
     (send _rangeMat :serialization-length)
+    ;; sensor_msgs/Image[] _mlRangeMat
+    (apply #'+ (send-all _mlRangeMat :serialization-length)) 4
     ))
   (:serialize
    (&optional strm)
@@ -299,6 +310,11 @@
        (send _cloud_surface :serialize s)
      ;; sensor_msgs/Image _rangeMat
        (send _rangeMat :serialize s)
+     ;; sensor_msgs/Image[] _mlRangeMat
+     (write-long (length _mlRangeMat) s)
+     (dolist (elem _mlRangeMat)
+       (send elem :serialize s)
+       )
      ;;
      (if (null strm) (get-output-stream-string s))))
   (:deserialize
@@ -399,11 +415,18 @@
      (send _cloud_surface :deserialize buf ptr-) (incf ptr- (send _cloud_surface :serialization-length))
    ;; sensor_msgs/Image _rangeMat
      (send _rangeMat :deserialize buf ptr-) (incf ptr- (send _rangeMat :serialization-length))
+   ;; sensor_msgs/Image[] _mlRangeMat
+   (let (n)
+     (setq n (sys::peek buf ptr- :integer)) (incf ptr- 4)
+     (setq _mlRangeMat (let (r) (dotimes (i n) (push (instance sensor_msgs::Image :init) r)) r))
+     (dolist (elem- _mlRangeMat)
+     (send elem- :deserialize buf ptr-) (incf ptr- (send elem- :serialization-length))
+     ))
    ;;
    self)
   )
 
-(setf (get lio_sam::cloud_info :md5sum-) "7374f8b2f88cabcdbc6b83d139f2d4f6")
+(setf (get lio_sam::cloud_info :md5sum-) "102900be9f1d84c28194ebd4d28ac70f")
 (setf (get lio_sam::cloud_info :datatype-) "lio_sam/cloud_info")
 (setf (get lio_sam::cloud_info :definition-)
       "# Cloud Info
@@ -443,6 +466,9 @@ sensor_msgs/PointCloud2 cloud_surface   # extracted surface feature
 
 # Range image for feature extraction
 sensor_msgs/Image rangeMat
+
+# multi-layer range mat
+sensor_msgs/Image[] mlRangeMat
 
 
 ================================================================================
@@ -545,6 +571,6 @@ uint8[] data          # actual matrix data, size is (step * rows)
 
 
 
-(provide :lio_sam/cloud_info "7374f8b2f88cabcdbc6b83d139f2d4f6")
+(provide :lio_sam/cloud_info "102900be9f1d84c28194ebd4d28ac70f")
 
 

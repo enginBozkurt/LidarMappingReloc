@@ -74,6 +74,7 @@ enum class SensorType { VELODYNE, OUSTER };
 class ParamServer
 {
 public:
+    bool useOdom;
     bool IMU9Axis=true;
     int optIteration;
     ros::NodeHandle nh;
@@ -108,6 +109,7 @@ public:
 
     //Scan context
     string saveNodeRawCloudDirectory;
+    double SC_DIST_THRES;
     double LIDAR_HEIGHT;
     int PC_NUM_RING;
     int PC_NUM_SECTOR;
@@ -116,8 +118,15 @@ public:
     bool euclideanLC;
 
     // BLC: BRIEF descriptors of Lidar Corner points
-    int keypointNum;
+    int keypointCornerNum;
+    int keypointSurfaceNum;
     int keypointSize;
+    int bitSize;
+
+    int layerNum;
+    double mlMAX_RADIUS;
+
+    bool generateVocab;
 
     bool relocalizationMode;
     bool mapLoaded;
@@ -192,6 +201,8 @@ public:
 
     ParamServer()
     {
+        nh.param<bool>("lio_sam/useOdom",useOdom, false);
+
         nh.param<std::string>("/robot_id", robot_id, "roboat");
         nh.param<int>("lio_sam/optIteration", optIteration,30);
         nh.param<std::string>("lio_sam/pointCloudTopic", pointCloudTopic, "points_raw");
@@ -225,10 +236,20 @@ public:
         nh.param<int>("lio_sam/PC_NUM_SECTOR", PC_NUM_SECTOR, 60);
         nh.param<double>("lio_sam/PC_MAX_RADIUS", PC_MAX_RADIUS, 80.0);
         nh.param<int>("lio_sam/loopClosingInterval",loopClosingInterval, 60);
+        nh.param<double>("lio_sam/SC_DIST_THRES",SC_DIST_THRES, 0.1);
 
         // BLC
-        nh.param<int>("lio_sam/keypointNum", keypointNum, 100);
+        nh.param<int>("lio_sam/keypointCornerNum", keypointCornerNum, 50);
+        nh.param<int>("lio_sam/keypointSurfaceNum", keypointSurfaceNum, 450);
         nh.param<int>("lio_sam/keypointSize", keypointSize, 5);
+        nh.param<int>("lio_sam/bitSize", bitSize, 32);
+
+        // multi-layer rangemat
+        nh.param<int>("lio_sam/layerNum", layerNum, 10);
+        nh.param<double>("lio_sam/mlMAX_RADIUS", mlMAX_RADIUS, 30.0);
+
+        nh.param<bool>("lio_sam/generateVocab", generateVocab, false);
+
 
         std::string sensorStr;
         nh.param<std::string>("lio_sam/sensor", sensorStr, "");

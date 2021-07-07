@@ -96,6 +96,7 @@ public:
     {
         // subImu        = nh.subscribe<sensor_msgs::Imu>(imuTopic, 2000, &ImageProjection::imuHandler, this, ros::TransportHints().tcpNoDelay());
         // subOdom       = nh.subscribe<nav_msgs::Odometry>(odomTopic+"_incremental", 2000, &ImageProjection::odometryHandler, this, ros::TransportHints().tcpNoDelay());
+        subOdom       = nh.subscribe<nav_msgs::Odometry>(odomTopic, 2000, &ImageProjection::odometryHandler, this, ros::TransportHints().tcpNoDelay());
         subLaserCloud = nh.subscribe<sensor_msgs::PointCloud2>(pointCloudTopic, 5, &ImageProjection::cloudHandler, this, ros::TransportHints().tcpNoDelay());
 
         pubExtractedCloud = nh.advertise<sensor_msgs::PointCloud2> ("lio_sam/deskew/cloud_deskewed", 1);
@@ -121,6 +122,7 @@ public:
 
         cloudInfo.pointColInd.assign(N_SCAN*Horizon_SCAN, 0);
         cloudInfo.pointRange.assign(N_SCAN*Horizon_SCAN, 0);
+        // cloudInfo.mlRangeMat.assign(layerNum, sensor_msgs::Image());
 
         resetParameters();
     }
@@ -212,11 +214,11 @@ public:
     //     // cout << "roll: " << imuRoll << ", pitch: " << imuPitch << ", yaw: " << imuYaw << endl << endl;
     // }
 
-    // void odometryHandler(const nav_msgs::Odometry::ConstPtr& odometryMsg)
-    // {
-    //     std::lock_guard<std::mutex> lock2(odoLock);
-    //     odomQueue.push_back(*odometryMsg);
-    // }
+    void odometryHandler(const nav_msgs::Odometry::ConstPtr& odometryMsg)
+    {
+        std::lock_guard<std::mutex> lock2(odoLock);
+        odomQueue.push_back(*odometryMsg);
+    }
 
     void cloudHandler(const sensor_msgs::PointCloud2ConstPtr& laserCloudMsg)
     {
@@ -418,13 +420,13 @@ public:
 
     void odomDeskewInfo()
     {
-        // for bag: just check tf
+        // // for odom tf already published
         // tf::Stamped<tf::Pose> ident (tf::Transform(tf::createQuaternionFromRPY(0,0,0),
         //                                    tf::Vector3(0,0,0)), currentCloudMsg.header.stamp, lidarFrame);  
         // tf::Stamped<tf::Transform> odom_pose;
         // try
         // {
-        //     tf_.transformPose(odometryFrame, ident, odom_pose); // get baselink frame in odom frame
+        //     tf_.transformPose(odometryFrame, ident, odom_pose); // get baselink frame expressed in odom frame
         // }
         // catch(tf::TransformException e)
         // {
@@ -439,59 +441,67 @@ public:
         // cloudInfo.initialGuessYaw   = tf::getYaw(odom_pose.getRotation());
         // cloudInfo.odomAvailable = true;
 
-        // if no accurate lidar-IMU extrensics, just use 0 guess
-        cloudInfo.initialGuessX = 0.0;
-        cloudInfo.initialGuessY = 0.0;
-        cloudInfo.initialGuessZ = 0.0;
-        cloudInfo.initialGuessRoll  = 0.0;
-        cloudInfo.initialGuessPitch = 0.0;
-        cloudInfo.initialGuessYaw   = 0.0;
-        cloudInfo.odomAvailable = true;
+        // // if no accurate lidar-IMU extrensics, just use 0 guess
+        // cloudInfo.initialGuessX = 0.0;
+        // cloudInfo.initialGuessY = 0.0;
+        // cloudInfo.initialGuessZ = 0.0;
+        // cloudInfo.initialGuessRoll  = 0.0;
+        // cloudInfo.initialGuessPitch = 0.0;
+        // cloudInfo.initialGuessYaw   = 0.0;
+        // cloudInfo.odomAvailable = true;
         // cloudInfo.odomAvailable = false;
 
-        // while (!odomQueue.empty())
-        // {
-        //     if (odomQueue.front().header.stamp.toSec() < timeScanCur - 0.01)
-        //         odomQueue.pop_front();
-        //     else
-        //         break;
-        // }
+        // for nav_msgs::Odometry messages
+        if (useOdom){
+            while (!odomQueue.empty())
+            {
+                if (odomQueue.front().header.stamp.toSec() < timeScanCur - 0.05) // only 20Hz for wheel encoder!
+                    odomQueue.pop_front();
+                else
+                    break;
+            }
 
-        // if (odomQueue.empty())
-        //     return;
+            if (odomQueue.empty())
+                return;
 
-        // if (odomQueue.front().header.stamp.toSec() > timeScanCur)
-        //     return;
+            if (odomQueue.front().header.stamp.toSec() > timeScanCur)
+                return;
 
-        // // get start odometry at the beinning of the scan
-        // nav_msgs::Odometry startOdomMsg;
+            // get start odometry at the beinning of the scan
+            nav_msgs::Odometry startOdomMsg;
 
-        // for (int i = 0; i < (int)odomQueue.size(); ++i)
-        // {
-        //     startOdomMsg = odomQueue[i];
+            for (int i = 0; i < (int)odomQueue.size(); ++i)
+            {
+                startOdomMsg = odomQueue[i];
 
-        //     if (ROS_TIME(&startOdomMsg) < timeScanCur)
-        //         continue;
-        //     else
-        //         break;
-        // }
+                if (ROS_TIME(&startOdomMsg) < timeScanCur)
+                    continue;
+                else
+                    break;
+            }
+            // sometimes it can be close to 50ms!
+            // cout<<" The diff between wheel odom time and lidar point cloud time: "<<ROS_TIME(&startOdomMsg)-timeScanCur<<endl;
+            tf::Quaternion orientation;
+            tf::quaternionMsgToTF(startOdomMsg.pose.pose.orientation, orientation);
 
-        // tf::Quaternion orientation;
-        // tf::quaternionMsgToTF(startOdomMsg.pose.pose.orientation, orientation);
+            double roll, pitch, yaw;
+            tf::Matrix3x3(orientation).getRPY(roll, pitch, yaw);
 
-        // double roll, pitch, yaw;
-        // tf::Matrix3x3(orientation).getRPY(roll, pitch, yaw);
+            // Initial guess used in mapOptimization
+            // cloudInfo.initialGuessX = startOdomMsg.pose.pose.position.x;
+            // cloudInfo.initialGuessY = startOdomMsg.pose.pose.position.y;
+            cloudInfo.initialGuessX = 0;
+            cloudInfo.initialGuessY = 0;
+            cloudInfo.initialGuessZ = 0;
+            cloudInfo.initialGuessRoll  = 0;
+            cloudInfo.initialGuessPitch = 0;
+            cloudInfo.initialGuessYaw   = -yaw; // odom is reversed in the publisher,not just yaw!!!
 
-        // // Initial guess used in mapOptimization
-        // cloudInfo.initialGuessX = startOdomMsg.pose.pose.position.x;
-        // cloudInfo.initialGuessY = startOdomMsg.pose.pose.position.y;
-        // cloudInfo.initialGuessZ = startOdomMsg.pose.pose.position.z;
-        // cloudInfo.initialGuessRoll  = roll;
-        // cloudInfo.initialGuessPitch = pitch;
-        // cloudInfo.initialGuessYaw   = yaw;
-
-        // cloudInfo.odomAvailable = true;
-
+            cloudInfo.odomAvailable = true;
+        } 
+        else{
+            cloudInfo.odomAvailable = false;
+        }
         // // get end odometry at the end of the scan
         // odomDeskewFlag = false;
 
@@ -522,7 +532,7 @@ public:
         // float rollIncre, pitchIncre, yawIncre;
         // pcl::getTranslationAndEulerAngles(transBt, odomIncreX, odomIncreY, odomIncreZ, rollIncre, pitchIncre, yawIncre);
 
-        odomDeskewFlag = true;
+        // odomDeskewFlag = true;
     }
 
     void findRotation(double pointTime, float *rotXCur, float *rotYCur, float *rotZCur)
@@ -606,6 +616,11 @@ public:
         // cout<<"cloud size: "<<cloudSize<<" ring number: "<<laserCloudIn->points[0].ring<<endl;
         // range image projection
         int maxCol=-1;
+        std::vector<cv::Mat> mlRangeMat;
+        for(int p = 0;p< layerNum;p++) {
+            cv::Mat tmp(N_SCAN, Horizon_SCAN, CV_8U, cv::Scalar::all(0));
+            mlRangeMat.push_back(tmp);
+        }
         for (int i = 0; i < cloudSize; ++i)
         {
             PointType thisPoint;
@@ -618,7 +633,7 @@ public:
             if (range < lidarMinRange || range > lidarMaxRange)
                 continue;
             float angle = atan(thisPoint.z / sqrt(thisPoint.x * thisPoint.x + thisPoint.y * thisPoint.y)) * 180 / M_PI;
-            int rowIdn = int((angle + 15) / 2 + 0.5);
+            int rowIdn = int((angle + 15) / 2 + 0.5); // it is true for HDL 32? No, the hori angle is from -30.67 to 10.67 deg
             // ROS_INFO("x: %f, y: %f, z: %f, ring: %d",thisPoint.x,thisPoint.y, thisPoint.z,rowIdn);
             if (rowIdn < 0 || rowIdn >= N_SCAN)
                 continue;
@@ -645,6 +660,10 @@ public:
             // thisPoint = deskewPoint(&thisPoint, laserCloudIn->points[i].time);
 
             rangeMat.at<float>(rowIdn, columnIdn) = range;
+            // if (range >= mlMAX_RADIUS) 
+            //     mlRangeMat[layerNum-1].ptr<uchar>(rowIdn)[columnIdn] = 1;
+            // else
+            //     (mlRangeMat[round(range*layerNum/mlMAX_RADIUS-0.501)]).ptr<uchar>(rowIdn)[columnIdn] = 1;
 
             int index = columnIdn + rowIdn * Horizon_SCAN;
             fullCloud->points[index] = thisPoint;
@@ -655,13 +674,23 @@ public:
         // static int a = 0;
         // double minV, maxV;
         // maxV = lidarMaxRange;
-        cv::Mat rangeMat2;
-        // cv::Point minI,maxI;
-        // cv::minMaxLoc(rangeMat,&minV,&maxV,&minI, &maxI);
-        rangeMat2 = rangeMat/lidarMaxRange*255.0;
-        sensor_msgs::ImagePtr rangeMatMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", rangeMat2).toImageMsg();
-        cloudInfo.rangeMat = *rangeMatMsg;
+        // cv::Mat rangeMat2;
+        // // cv::Point minI,maxI;
+        // // cv::minMaxLoc(rangeMat,&minV,&maxV,&minI, &maxI);
+        // rangeMat2 = rangeMat/lidarMaxRange*255.0;
+        // // imwrite(saveMapDirectory+"1.jpg",rangeMat2);
+        // sensor_msgs::ImagePtr rangeMatMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", rangeMat2).toImageMsg();
+        // cloudInfo.rangeMat = *rangeMatMsg;
         
+        // // multi-layer image msg generation
+        // // cout<<"converting..."<<endl;
+        // cloudInfo.mlRangeMat.clear();
+        // for (int p =0;p<layerNum; ++p){
+        //     // imwrite(saveMapDirectory+to_string(fullCloud->size()*p)+".jpg",mlRangeMat[p]*255);
+        //     sensor_msgs::ImagePtr rangeMatMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", mlRangeMat[p]).toImageMsg();
+        //     cloudInfo.mlRangeMat.push_back(*rangeMatMsg);
+        // }
+
         // std::string filepath = "~/rangeMat.jpg";
         // if (!a++){
         //     try

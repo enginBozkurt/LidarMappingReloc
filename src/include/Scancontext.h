@@ -62,6 +62,7 @@ private:
     double PC_MAX_RADIUS;// 80 meter max in the original paper (IROS 18)
     double PC_UNIT_SECTORANGLE;
     double PC_UNIT_RINGGAP;
+    double SC_DIST_THRES;
 public: 
     SCManager(){}
     // SCManager(double LIDAR_HEIGHT,int PC_NUM_RING,int PC_NUM_SECTOR,double PC_MAX_RADIUS):
@@ -69,13 +70,14 @@ public:
     //         PC_UNIT_SECTORANGLE = 360.0 / double(PC_NUM_SECTOR);
     //         PC_UNIT_RINGGAP = PC_MAX_RADIUS / double(PC_NUM_RING);
         // } // reserving data space (of std::vector) could be considered. but the descriptor is lightweight so don't care.
-    void setKeyParams(double LIDAR_HEIGHT1,int PC_NUM_RING1,int PC_NUM_SECTOR1,double PC_MAX_RADIUS1){
+    void setKeyParams(double LIDAR_HEIGHT1,int PC_NUM_RING1,int PC_NUM_SECTOR1,double PC_MAX_RADIUS1,double SC_DIST_THRES1){
         LIDAR_HEIGHT = LIDAR_HEIGHT1;
         PC_NUM_RING = PC_NUM_RING1;
         PC_NUM_SECTOR = PC_NUM_SECTOR1;
         PC_MAX_RADIUS = PC_MAX_RADIUS1;
         PC_UNIT_SECTORANGLE = 360.0 / double(PC_NUM_SECTOR);
         PC_UNIT_RINGGAP = PC_MAX_RADIUS / double(PC_NUM_RING);
+        SC_DIST_THRES = SC_DIST_THRES1;
     }
     Eigen::MatrixXd makeScancontext( pcl::PointCloud<PointType> & _scan_down );
     Eigen::MatrixXd makeRingkeyFromScancontext( Eigen::MatrixXd &_desc );
@@ -110,7 +112,7 @@ public:
     // loop thres
     const double SEARCH_RATIO = 0.1; // for fast comparison, no Brute-force, but search 10 % is okay. // not was in the original conf paper, but improved ver.
     // const double SC_DIST_THRES = 0.13; // empirically 0.1-0.2 is fine (rare false-alarms) for 20x60 polar context (but for 0.15 <, DCS or ICP fit score check (e.g., in LeGO-LOAM) should be required for robustness)
-    const double SC_DIST_THRES = 0.3; // 0.4-0.6 is good choice for using with robust kernel (e.g., Cauchy, DCS) + icp fitness threshold / if not, recommend 0.1-0.15
+    // const double SC_DIST_THRES = 0.1; // 0.4-0.6 is good choice for using with robust kernel (e.g., Cauchy, DCS) + icp fitness threshold / if not, recommend 0.1-0.15
     // const double SC_DIST_THRES = 0.7; // 0.4-0.6 is good choice for using with robust kernel (e.g., Cauchy, DCS) + icp fitness threshold / if not, recommend 0.1-0.15
 
     // config 

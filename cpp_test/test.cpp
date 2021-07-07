@@ -8,22 +8,51 @@
 
 #include<boost/dynamic_bitset.hpp>
 #include<boost/utility.hpp>
+
+#include"DBoW3/DBoW3.h"
 using namespace std;
 using namespace cv;
 #define mSize 500
-int main(){
-    // test descriptor and kp loading
-    ifstream des("/home/binpeng/Documents/LIO-SAM/maps/office/BLC/descriptor128dim_60kp.txt",ios::in | ios::binary);
-    // vector<cv::Mat> desOfAllKeyframes;
-    int i=0;
-    while(des.good()){
-        char buffer[128];
-        des.read(buffer,128);
-        cout<<buffer<<endl;
-        i++;
+      /**
+   * Returns the Hamming distance between two descriptors
+   * @param a first descriptor vector
+   * @param b second descriptor vector
+   * @return hamming distance
+   */
+    int  distance(const  cv::Mat &a,
+    const  cv::Mat &b)
+    {
+    // Bit set count operation from
+    // http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel
+
+    const int *pa = a.ptr<int32_t>();
+    const int *pb = b.ptr<int32_t>();
+
+    int dist=0;
+
+    for(int i=0; i<8; i++, pa++, pb++)
+    {
+        unsigned  int v = *pa ^ *pb;
+        v = v - ((v >> 1) & 0x55555555);
+        v = (v & 0x33333333) + ((v >> 2) & 0x33333333);
+        dist += (((v + (v >> 4)) & 0xF0F0F0F) * 0x1010101) >> 24;
     }
-    cout<<i<<endl;
-    des.close();
+
+    return dist;
+    }
+int main(){
+    // Eigen::Matrix
+    Eigen::Affine3f a=Eigen::Affine3f::Identity();; 
+    cout<<a.matrix()<<endl;
+
+    // // test vector assign
+    // vector<int> vec;
+    // vec.assign(10,0);
+    // cout<<vec.size();
+
+    // test descriptor and kp loading
+
+
     // // test bitset saving
     // std::vector<boost::dynamic_bitset<>> descriptors;
     // for(int i=0; i<10;i++){
@@ -59,15 +88,53 @@ int main(){
     // sort(vec.begin(),vec.end());
     // for( auto i: vec) cout<<i.second<<endl;
 
-    // // test cv::Mat
-
-    // Mat src = imread("robComics.jpg",1);
-    // // cout<<src<<endl;
-    // cout<<"Type: "<<src.type()<<" channels: "<<src.channels()<<" step: "<<src.step<< " row: "<< src.rows << " col: "<< src.cols <<endl;
-    // unsigned int b = src.data[10*src.step + 11*src.channels()+1];
+    // // test binary writing for float numbers
+    // string filename = "1.txt";
+    // ofstream out(filename,ios::out);
+    // float a = 124.23423;
+    // out.write((char*)&a,sizeof(a));
+    // out.close();
+    // ifstream in(filename);
+    // float b;
+    // in.read((char*)&b,sizeof(float));
+    // in.close();
     // cout<<b<<endl;
-    // // imshow("pic",src);
-    // // waitKey(0);
+
+    // // test cv::Mat
+    // int size = 200;
+    // cv::Mat a(1,32,CV_8UC1,cv::Scalar::all(1));
+    // a.ptr<uchar>(0)[1] = 0;
+    // cv::Mat b(1,32,CV_8UC1,cv::Scalar::all(0));
+    // int dist = distance(a,b);
+    // cout<<dist<<endl;
+
+
+
+    // Mat src = imread("../robComics.jpg",0);
+    // cout<<src.rows<<" " << src.cols<<endl;
+    // Mat src2(100,100,CV_8UC1,cv::Scalar::all(0));
+    // cv::Mat h = src(cv::Rect(0,0,100,100));
+    // src2.copyTo(h);
+    // // cout<<"Type: "<<src.type()<<" channels: "<<src.channels()<<" step: "<<src.step<< " row: "<< src.rows << " col: "<< src.cols <<endl;
+    // // unsigned int b = src.data[10*src.step + 11*src.channels()+1];
+    // // cout<<b<<endl;
+    // uchar* ptr = src.data;
+    // for (int i=0;i<500;i++)
+    //     for (int j=0;j< 32;j++){
+    //         uchar a = 125;
+    //         src.ptr<uchar>(i)[j] = 1;
+    //     }
+    // Mat src2 = src.clone();
+    // vector<Mat> vec;
+    // vec.push_back(src);
+    // vec.push_back(src2);
+    // cout<<vec[0].type()<<endl;
+    // DBoW3::Vocabulary vocab;
+    // vocab.create(vec);
+    // cout<<vocab<<endl;
+
+    // imshow("pic",src);
+    // waitKey(0);
 
     // // eigen2cv
     // Eigen::Matrix<double,Eigen::Dynamic, Eigen::Dynamic> eigenM;

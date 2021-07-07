@@ -43,6 +43,7 @@ class cloud_info {
       this.cloud_corner = null;
       this.cloud_surface = null;
       this.rangeMat = null;
+      this.mlRangeMat = null;
     }
     else {
       if (initObj.hasOwnProperty('header')) {
@@ -183,6 +184,12 @@ class cloud_info {
       else {
         this.rangeMat = new sensor_msgs.msg.Image();
       }
+      if (initObj.hasOwnProperty('mlRangeMat')) {
+        this.mlRangeMat = initObj.mlRangeMat
+      }
+      else {
+        this.mlRangeMat = [];
+      }
     }
   }
 
@@ -234,6 +241,12 @@ class cloud_info {
     bufferOffset = sensor_msgs.msg.PointCloud2.serialize(obj.cloud_surface, buffer, bufferOffset);
     // Serialize message field [rangeMat]
     bufferOffset = sensor_msgs.msg.Image.serialize(obj.rangeMat, buffer, bufferOffset);
+    // Serialize message field [mlRangeMat]
+    // Serialize the length for message field [mlRangeMat]
+    bufferOffset = _serializer.uint32(obj.mlRangeMat.length, buffer, bufferOffset);
+    obj.mlRangeMat.forEach((val) => {
+      bufferOffset = sensor_msgs.msg.Image.serialize(val, buffer, bufferOffset);
+    });
     return bufferOffset;
   }
 
@@ -287,6 +300,13 @@ class cloud_info {
     data.cloud_surface = sensor_msgs.msg.PointCloud2.deserialize(buffer, bufferOffset);
     // Deserialize message field [rangeMat]
     data.rangeMat = sensor_msgs.msg.Image.deserialize(buffer, bufferOffset);
+    // Deserialize message field [mlRangeMat]
+    // Deserialize array length for message field [mlRangeMat]
+    len = _deserializer.uint32(buffer, bufferOffset);
+    data.mlRangeMat = new Array(len);
+    for (let i = 0; i < len; ++i) {
+      data.mlRangeMat[i] = sensor_msgs.msg.Image.deserialize(buffer, bufferOffset)
+    }
     return data;
   }
 
@@ -303,7 +323,10 @@ class cloud_info {
     length += sensor_msgs.msg.PointCloud2.getMessageSize(object.cloud_corner);
     length += sensor_msgs.msg.PointCloud2.getMessageSize(object.cloud_surface);
     length += sensor_msgs.msg.Image.getMessageSize(object.rangeMat);
-    return length + 77;
+    object.mlRangeMat.forEach((val) => {
+      length += sensor_msgs.msg.Image.getMessageSize(val);
+    });
+    return length + 81;
   }
 
   static datatype() {
@@ -313,7 +336,7 @@ class cloud_info {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return '7374f8b2f88cabcdbc6b83d139f2d4f6';
+    return '102900be9f1d84c28194ebd4d28ac70f';
   }
 
   static messageDefinition() {
@@ -356,6 +379,9 @@ class cloud_info {
     
     # Range image for feature extraction
     sensor_msgs/Image rangeMat
+    
+    # multi-layer range mat
+    sensor_msgs/Image[] mlRangeMat
     
     
     ================================================================================
@@ -622,6 +648,16 @@ class cloud_info {
     }
     else {
       resolved.rangeMat = new sensor_msgs.msg.Image()
+    }
+
+    if (msg.mlRangeMat !== undefined) {
+      resolved.mlRangeMat = new Array(msg.mlRangeMat.length);
+      for (let i = 0; i < resolved.mlRangeMat.length; ++i) {
+        resolved.mlRangeMat[i] = sensor_msgs.msg.Image.Resolve(msg.mlRangeMat[i]);
+      }
+    }
+    else {
+      resolved.mlRangeMat = []
     }
 
     return resolved;

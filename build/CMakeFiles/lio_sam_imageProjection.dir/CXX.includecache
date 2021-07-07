@@ -31,6 +31,8 @@ sensor_msgs/PointCloud2.h
 -
 sensor_msgs/Image.h
 -
+sensor_msgs/Image.h
+-
 
 /home/binpeng/Documents/LIO-SAM/src/include/tic_toc.h
 ctime

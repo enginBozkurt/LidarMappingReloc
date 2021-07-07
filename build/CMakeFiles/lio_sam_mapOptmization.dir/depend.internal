@@ -660,6 +660,7 @@ CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o
  /opt/ros/kinetic/include/geometry_msgs/Pose.h
  /opt/ros/kinetic/include/geometry_msgs/PoseStamped.h
  /opt/ros/kinetic/include/geometry_msgs/PoseWithCovariance.h
+ /opt/ros/kinetic/include/geometry_msgs/PoseWithCovarianceStamped.h
  /opt/ros/kinetic/include/geometry_msgs/Quaternion.h
  /opt/ros/kinetic/include/geometry_msgs/QuaternionStamped.h
  /opt/ros/kinetic/include/geometry_msgs/Transform.h
@@ -1427,6 +1428,14 @@ CMakeFiles/lio_sam_mapOptmization.dir/src/mapOptmization.cpp.o
  /usr/include/x86_64-linux-gnu/sys/select.h
  /usr/include/x86_64-linux-gnu/sys/time.h
  /usr/include/x86_64-linux-gnu/sys/timeb.h
+ /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/BowVector.h
+ /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/DBoW3.h
+ /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/Database.h
+ /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/FeatureVector.h
+ /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/QueryResults.h
+ /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/ScoringObject.h
+ /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/Vocabulary.h
+ /usr/local/lib/cmake/GTSAM/../../../include/DBoW3/exports.h
  /usr/local/lib/cmake/GTSAM/../../../include/gtsam/base/ConcurrentMap.h
  /usr/local/lib/cmake/GTSAM/../../../include/gtsam/base/FastDefaultAllocator.h
  /usr/local/lib/cmake/GTSAM/../../../include/gtsam/base/FastList.h

@@ -350,6 +350,7 @@ lio_sam_mapOptmization_EXTERNAL_OBJECTS =
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_mapOptmization: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_ximgproc3.so.3.3.1
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_mapOptmization: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_xobjdetect3.so.3.3.1
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_mapOptmization: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_xphoto3.so.3.3.1
+/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_mapOptmization: /usr/local/lib/libDBoW3.a
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_mapOptmization: /usr/local/lib/libgtsam.so.4.0.2
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_mapOptmization: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_mapOptmization: /usr/lib/x86_64-linux-gnu/libpcl_common.so
@@ -369,6 +370,7 @@ lio_sam_mapOptmization_EXTERNAL_OBJECTS =
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_mapOptmization: /usr/lib/x86_64-linux-gnu/libpcl_tracking.so
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_mapOptmization: /usr/lib/x86_64-linux-gnu/libpcl_recognition.so
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_mapOptmization: /usr/lib/x86_64-linux-gnu/libpcl_outofcore.so
+/home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_mapOptmization: /usr/local/lib/libDBoW3.a
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_mapOptmization: /usr/lib/x86_64-linux-gnu/libvtkexoIIc-6.2.so.6.2.0
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_mapOptmization: /usr/lib/x86_64-linux-gnu/libnetcdf_c++.so
 /home/binpeng/Documents/LIO-SAM/devel/lib/lio_sam/lio_sam_mapOptmization: /usr/lib/x86_64-linux-gnu/libnetcdf.so
